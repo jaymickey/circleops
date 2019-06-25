@@ -19,6 +19,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"net/url"
 	"os"
 	"path"
 
@@ -42,15 +43,17 @@ func setup(cmd *cobra.Command, args []string) error {
 
 	fmt.Print("CircleCI Base URL (e.g. https://circleci.com): ")
 	sc.Scan()
-	url := sc.Text()
+	URL := sc.Text()
 
 	fmt.Print("API Token: ")
 	sc.Scan()
 	api := sc.Text()
 
-	viper.Set("serverURL", url)
+	viper.Set("serverURL", URL)
 	viper.Set("apiToken", api)
-	viper.Set("apiLocation", path.Join(viper.GetString("serverURL"), "api", "v1.1"))
+	u, _ := url.Parse(viper.GetString("serverURL"))
+	u.Path = path.Join(u.Path, "api", "v1.1")
+	viper.Set("apiLocation", u.String())
 
 	if !noInteractive {
 		configDir, err := ensureConfigPath()

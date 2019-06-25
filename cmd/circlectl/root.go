@@ -41,9 +41,10 @@ var rootCmd = &cobra.Command{
 	interface. This CLI focuses on interactions with the workflow,
 	and jobs aspects of CircleCI - such as allowing developers to
 	easily re-run a job or workflow.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Using config file: %v", viper.ConfigFileUsed())
-	},
+	//Run: func(cmd *cobra.Command, args []string) {
+	//fmt.Printf("Using config file: %v", viper.ConfigFileUsed())
+
+	//},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -64,7 +65,7 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	viper.SetDefault("serverURL", "https://circleci.deployment-dev.cni.digital")
-	viper.Set("apiLocation", path.Join(viper.GetString("server"), "api", "v1.1"))
+	viper.SetDefault("apiLocation", path.Join(viper.GetString("serverURL"), "api", "v1.1"))
 }
 
 // initConfig reads in config file and ENV variables if set.
