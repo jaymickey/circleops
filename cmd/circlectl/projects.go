@@ -2,24 +2,24 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"text/tabwriter"
 
 	"github.com/jaymickey/circleops/api"
 	"github.com/jaymickey/circleops/client"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var projectsCmd = &cobra.Command{
+var getProjectsCmd = &cobra.Command{
 	Use:   "projects",
 	Short: "Get all projects the user has followed.",
 	Run:   getProjects,
 }
 
 func init() {
-	getCmd.AddCommand(projectsCmd)
+	getCmd.AddCommand(getProjectsCmd)
 }
 
 func getProjects(cmd *cobra.Command, args []string) {
@@ -30,10 +30,17 @@ func getProjects(cmd *cobra.Command, args []string) {
 
 	cl, err := client.NewClient(host, endpoint, port, token)
 	if err != nil {
-		log.Fatalf("error creating client: %v", err)
+		log.WithFields(log.Fields{
+			"host":     host,
+			"endpoint": endpoint,
+			"port":     port,
+		}).Fatalf("error creating client: %v", err)
 	}
 
-	projects := api.GetProjects(cl)
+	projects, err := api.GetProjects(cl)
+	if err != nil {
+		log.Fatalf("error retrieving projects from API: %v", err)
+	}
 
 	w := tabwriter.NewWriter(os.Stdout, 24, 8, 0, ' ', 0)
 	fmt.Fprintln(w, "Name\tOrganisation\tLanguage")
