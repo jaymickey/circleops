@@ -1,8 +1,8 @@
-# CircleOps - The Home of `circlectl`
+# CircleOps - CircleCI in the Terminal
 
 **_This project is still in early development_**
 
-CircleOps is a project that provides a command - `circlectl` - that can be used to interact with the CircleCI API.
+CircleOps is a project that provides a command line tool - `circlectl` - for interacting with the CircleCI API. It is currently in early development.
 
 ## Installation 
 
