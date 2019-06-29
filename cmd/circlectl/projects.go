@@ -9,7 +9,6 @@ import (
 	"github.com/jaymickey/circleops/client"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var getProjectsCmd = &cobra.Command{
@@ -23,23 +22,22 @@ func init() {
 }
 
 func getProjects(cmd *cobra.Command, args []string) {
-	host := viper.GetString("apilocation")
-	port := viper.GetString("port")
+	host, port, token := getParts()
 	endpoint := "projects"
-	token := viper.GetString("apiToken")
+	projectsLogger := log.WithFields(log.Fields{
+		"host":     host,
+		"endpoint": endpoint,
+		"port":     port,
+	})
 
-	cl, err := client.NewClient(host, endpoint, port, token)
+	cl, err := client.NewClient(host, port, endpoint, token)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"host":     host,
-			"endpoint": endpoint,
-			"port":     port,
-		}).Fatalf("error creating client: %v", err)
+		projectsLogger.Fatalf("error creating client: %v", err)
 	}
 
 	projects, err := api.GetProjects(cl)
 	if err != nil {
-		log.Fatalf("error retrieving projects from API: %v", err)
+		projectsLogger.Fatalf("error retrieving projects from API: %v", err)
 	}
 
 	w := tabwriter.NewWriter(os.Stdout, 24, 8, 0, ' ', 0)

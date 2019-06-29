@@ -3,11 +3,12 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Client struct {
@@ -19,9 +20,10 @@ type Client struct {
 
 	Headers http.Header
 	Method  string
+	Query   map[string]interface{}
 }
 
-func NewClient(host, endpoint, port, token string) (*Client, error) {
+func NewClient(host, port, endpoint, token string) (*Client, error) {
 	if isURL(host) {
 		return &Client{
 			HttpClient: &http.Client{Timeout: 30 * time.Second},
@@ -55,6 +57,15 @@ func (c *Client) SetMethod(method string) *Client {
 	return c
 }
 
+func (c *Client) AddQuery(key string, value interface{}) *Client {
+	if c.Query == nil {
+		c.Query = make(map[string]interface{})
+	}
+	c.Query[key] = value
+
+	return c
+}
+
 func buildURL(host, port, endpoint, token string) string {
 	u := strings.TrimSuffix(host, "/")
 	if port != "" {
@@ -67,14 +78,25 @@ func (c *Client) prepareRequest() *http.Request {
 	rawURL := buildURL(c.Host, c.Port, c.Endpoint, c.Token)
 	u, err := url.Parse(rawURL)
 	if err != nil {
-		log.Fatalf("invalid URL (%v): %v", c.Host+"/"+c.Endpoint, err)
+		log.WithField("method", "prepareRequest()").
+			Fatalf("invalid URL (%v): %v", rawURL, err)
 	}
 
-	return &http.Request{
+	request := &http.Request{
 		Method: c.Method,
 		URL:    u,
 		Header: c.Headers,
 	}
+
+	if c.Query != nil {
+		query := request.URL.Query()
+		for k, v := range c.Query {
+			query.Add(k, fmt.Sprintf("%v", v))
+		}
+		request.URL.RawQuery = query.Encode()
+	}
+
+	return request
 }
 
 func (c *Client) Run(obj interface{}) error {

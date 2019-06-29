@@ -22,9 +22,10 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/spf13/cobra"
+	log "github.com/sirupsen/logrus"
 
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -57,6 +58,8 @@ func Execute() {
 }
 
 func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().BoolVar(&noInteractive, "no-interactive", false, "")
@@ -89,7 +92,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		// fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }
 
@@ -111,4 +114,11 @@ func ensureConfigPath() (configDir string, err error) {
 	}
 
 	return configDir, nil
+}
+
+func getParts() (host, port, token string) {
+	host = viper.GetString("apiLocation")
+	port = viper.GetString("port")
+	token = viper.GetString("apiToken")
+	return host, port, token
 }
