@@ -6,7 +6,7 @@ CircleOps is a project that provides a command line tool - `circlectl` - for int
 
 ## Installation 
 
-`go get -u github.com/jaymickey/circleops/cmd/circlectl`
+`go get -u mickey.dev/circleops/cmd/circlectl`
 
 Running `circlectl setup` will prompt for a server URL and API token. Configuration is stored by default in `$HOME/.circlectl/config.yaml`.
 

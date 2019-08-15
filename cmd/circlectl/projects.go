@@ -9,6 +9,8 @@ import (
 	"github.com/jaymickey/circleops/client"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"mickey.dev/circleops/api"
+	"mickey.dev/circleops/client"
 )
 
 var getProjectsCmd = &cobra.Command{

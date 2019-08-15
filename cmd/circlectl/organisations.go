@@ -5,8 +5,8 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/jaymickey/circleops/api"
-	"github.com/jaymickey/circleops/client"
+	"mickey.dev/circleops/api"
+	"mickey.dev/circleops/client"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )

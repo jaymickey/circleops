@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/jaymickey/circleops/client"
+	"mickey.dev/circleops/client"
 )
 
 type Project struct {
